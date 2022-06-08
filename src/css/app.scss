@@ -1,0 +1,10 @@
+// app global css in SCSS form
+
+.q-header {
+  height: var(--header-height);
+  background-color: $carbon;
+}
+
+body {
+  font-family: 'MuseoSans', Roboto, sans-serif;
+}
