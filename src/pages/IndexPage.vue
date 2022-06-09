@@ -14,23 +14,21 @@
       <q-card class="participate-card">
         <q-card-section class="q-pb-sm">
           <div class="text-grey-7">{{ Research.type }}</div>
-          <div class="text-h6 text-bold">
+          <div class="text-h6 text-bold line-28">
             {{ Research.title }}
           </div>
         </q-card-section>
 
         <q-card-section class="q-py-none">
           <div>
-            <span class="text-bold">Authors</span>
+            <span class="text-bold q-mr-xs">Authors</span>
             <span
-              v-for="author of Research.authors"
+              v-for="(author, i) of Research.authors"
               :key="author.id"
-              class="q-mx-xs"
+              class="q-mr-xs"
             >
-              <span class="user-reference cursor-pointer">
-                {{ author.fullName }}
-              </span>
-              ,
+              <UserReference :user="author" />
+              <span v-if="i !== Research.authors.length - 1">,</span>
             </span>
           </div>
         </q-card-section>
@@ -38,18 +36,35 @@
         <q-card-section class="">
           <div>
             <span class="text-bold">Editor</span>
-            <span class="user-reference cursor-pointer q-mx-xs">
-              {{ Research.editor.fullName }}
-            </span>
+            <UserReference :user="Research.editor" class="q-mx-xs" />
           </div>
 
           <div>
             <span class="text-bold">Yourself</span>
-            <!-- <span class="user-reference cursor-pointer q-mx-xs">
-              {{ Research.yourself.fullName }}
-            </span> -->
-            <UserReference class="q-mx-xs" />
+            <UserReference :user="Research.yourself" class="q-mx-xs" />
           </div>
+        </q-card-section>
+
+        <q-card-section class="q-py-none">
+          <q-expansion-item
+            dense
+            dense-toggle
+            expand-separator
+            header-class="text-accent expansion-header"
+            label="Affiliations"
+          >
+            <div>
+              <div
+                v-for="(affiliation, i) of Research.editor.affiliations"
+                :key="affiliation.id"
+                class="affiliation-item"
+              >
+                <span class="list-number">{{ i }}</span> {{ affiliation.name }},
+                {{ affiliation.city }},
+                {{ affiliation.country }}
+              </div>
+            </div>
+          </q-expansion-item>
         </q-card-section>
 
         <q-card-section class="text-bold">
@@ -116,5 +131,38 @@ export default defineComponent({
   width: 99%;
   display: flex;
   flex-direction: column;
+
+  .expansion-header {
+    width: max-content;
+    padding-left: 0;
+    transition: all 0.2s ease-in-out;
+
+    i {
+      color: $accent;
+    }
+
+    &:hover,
+    &:focus {
+      font-weight: 600;
+      transform: scale(1.03);
+
+      .q-focus-helper {
+        background: transparent !important;
+      }
+    }
+  }
+
+  .affiliation-item {
+    color: $grey-7;
+    font-weight: 300;
+
+    .list-number {
+      font-weight: 400;
+      color: $carbon;
+      font-size: 10px;
+      bottom: 4px;
+      position: relative;
+    }
+  }
 }
 </style>

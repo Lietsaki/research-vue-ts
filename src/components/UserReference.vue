@@ -1,34 +1,77 @@
 <template>
-  <span class="user-reference cursor-pointer"
-    >Johnny
-
-    <q-tooltip
-      anchor="top middle"
-      self="bottom middle"
-      :offset="[10, 10]"
-      transition-show="scale"
-      transition-hide="scale"
-      class="bg-white shadow-3"
-      v-model="tooltip"
+  <span
+    @mouseenter="openMenu"
+    @mouseleave="startCloseTimeout"
+    class="user-reference cursor-pointer"
+    >{{ user.fullName }}
+    <q-menu
+      @mouseenter="openMenu"
+      @mouseleave="startCloseTimeout"
+      v-model="showing"
+      class="q-px-md q-pt-md q-pb-sm"
     >
       <div class="user-reference-card">
-        <q-card-section class="">
-          <div class="flex justify-between">
+        <q-card-section class="q-pa-none full-height">
+          <div class="flex justify-between full-height">
             <div>
-              <div class="text-bold text-subtitle1">Johnny Sfondi</div>
-              <div class="text-grey-7">Realmo,</div>
-              <div class="text-grey-7">Swartzville, United Arab Emirates</div>
+              <div class="text-bold text-subtitle1">{{ user.fullName }}</div>
+              <div class="font-size-13">
+                <div class="text-grey-7">{{ user.affiliations[0].name }},</div>
+                <div class="text-grey-7">
+                  {{ user.affiliations[0].city }},
+                  {{ user.affiliations[0].country }}
+                </div>
+              </div>
             </div>
+
             <div class="user-reference-card__profile-picture">
-              <img
-                src="https://loop.frontiersin.org/images/profile/11954/74"
-                alt=""
+              <img :src="user.pictureUrl" alt="" />
+            </div>
+
+            <div class="flex text-subtitle1 font-size-13">
+              <span class="q-mr-md">
+                <span class="text-bold text-accent">{{
+                  user.publications
+                }}</span>
+                Publications
+              </span>
+
+              <span class="q-mr-md">
+                <span class="text-bold text-accent">
+                  {{
+                    user.views.toLocaleString('en-US', {
+                      maximumFractionDigits: 2,
+                    })
+                  }}</span
+                >
+                Views
+              </span>
+
+              <span>
+                <span class="text-bold text-accent">
+                  {{
+                    user.followers.toLocaleString('en-US', {
+                      maximumFractionDigits: 2,
+                    })
+                  }}</span
+                >
+                Followers
+              </span>
+            </div>
+
+            <div class="flex full-width justify-end">
+              <q-btn
+                flat
+                icon="exit_to_app"
+                color="accent"
+                label="View profile"
+                :to="user.profileUrl"
               />
             </div>
           </div>
         </q-card-section>
       </div>
-    </q-tooltip>
+    </q-menu>
   </span>
 </template>
 
@@ -37,11 +80,30 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'UserReference',
+  props: {
+    user: {
+      type: Object,
+      required: true,
+    },
+  },
   components: {},
   data() {
-    return { tooltip: true };
+    return {
+      showing: false,
+      closeTimeoutId: null as null | ReturnType<typeof setTimeout>,
+    };
   },
-  methods: {},
+  methods: {
+    openMenu() {
+      if (this.closeTimeoutId) clearTimeout(this.closeTimeoutId);
+      this.showing = true;
+    },
+    startCloseTimeout() {
+      this.closeTimeoutId = setTimeout(() => {
+        this.showing = false;
+      }, 100);
+    },
+  },
 });
 </script>
 
@@ -64,6 +126,7 @@ export default defineComponent({
       width: 56px;
       height: 56px;
       border-radius: 100%;
+      border: 1px solid $bg;
     }
   }
 }
