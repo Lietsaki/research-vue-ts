@@ -1,6 +1,6 @@
 # research-journal (research-journal)
 
-Vue3 + Typescript practice
+Vue3 + Typescript practice. Uses Quasar Framework v2.
 
 ## Install the dependencies
 ```bash
